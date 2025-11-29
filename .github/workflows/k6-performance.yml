@@ -1,0 +1,36 @@
+name: k6 Performance Tests
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # можно запустить вручную
+
+jobs:
+  k6-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup k6
+        uses: k6-io/setup-k6@v1
+        with:
+          version: 'latest'
+
+      - name: Run k6 load test
+        run: |
+          k6 run tests/real-auth-test.js \
+            --out json=result.json \
+            --summary-export=summary.json
+
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-report
+          path: result.html
+
+      - name: Fail if thresholds crossed
+        if: failure()
+        run: |
+          echo "Performance thresholds were crossed! Deployment blocked."
+          exit 1
