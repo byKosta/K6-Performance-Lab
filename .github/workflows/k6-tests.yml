@@ -1,0 +1,47 @@
+# name: k6 Performance Tests
+
+# on:
+#   pull_request:
+#     branches: [ main, master ]
+#   push:
+#     branches: [ main, master ]
+#   workflow_dispatch:  # ручной запуск
+
+# jobs:
+#   k6-test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Setup k6
+#         uses: grafana/setup-k6-action@v1
+#         with:
+#           k6-version: 'v0.53.0'  # latest стабильная на 2025
+
+#       - name: Run k6 load test
+#         uses: grafana/run-k6-action@v1
+#         with:
+#           path: tests/real-auth-test.js  # или любой твой файл
+#           flags: --out json=result.json --summary-export=summary.json
+
+#       - name: Upload JSON results as artifact
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: k6-results
+#           path: |
+#             result.json
+#             summary.json
+
+#       - name: Generate and upload HTML report
+#         if: always()
+#         run: |
+#           # k6-to-html result.json > report.html (если установлен)
+#         continue-on-error: true
+
+#       - name: Fail if thresholds crossed
+#         if: failure()
+#         run: |
+#           echo "❌ Performance thresholds crossed! Deployment blocked."
+#           exit 1

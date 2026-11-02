@@ -1,0 +1,6 @@
+# Secrets — real values live only in local .env (template: .env.example)
+.env
+.env.*
+!.env.example
+
+.DS_Store
